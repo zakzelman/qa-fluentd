@@ -1,0 +1,79 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluentd-conf
+  labels:
+    app: fluentd
+data:
+  fluent.conf: |
+    <system>
+      worker 6
+      log_level info
+    </system>
+    <source>
+      @type  forward
+      @id input_forward
+      port  24224
+      bind 0.0.0.0
+    </source>
+    <source>
+      @type monitor_agent
+      bind 0.0.0.0
+      port 24210
+    </source>
+    <source>
+      @type prometheus
+      bind 0.0.0.0
+      port 24231
+      metrics_path /metrics
+    </source>
+    <source>
+      @type prometheus_output_monitor
+      interval 10
+      <labels>
+        hostname ${hostname}
+      </labels>
+    </source>
+    @include /usr/share/fluentd/etc/all/00-sys.conf
+    @include /usr/share/fluentd/etc/all/12-ots-profile-service-dev.conf
+    @include /usr/share/fluentd/etc/all/13-ebt-scs-stg.conf
+    @include /usr/share/fluentd/etc/all/12-ots-profile-service-qa.conf
+    @include /usr/share/fluentd/etc/all/14-ots-mobile-backend-dev.conf
+    @include /usr/share/fluentd/etc/all/14-ots-mobile-backend-qa.conf
+    @include /usr/share/fluentd/etc/all/15-ots-travelpay-qa.conf
+    @include /usr/share/fluentd/etc/all/16-ots-locations-dev.conf
+    @include /usr/share/fluentd/etc/all/16-ots-locations-qa.conf
+    @include /usr/share/fluentd/etc/all/18-ots-pns-webapp-qa.conf
+    @include /usr/share/fluentd/etc/all/18-ots-pns-batch-qa.conf
+    @include /usr/share/fluentd/etc/all/19-ots-short-link-qa.conf
+    @include /usr/share/fluentd/etc/all/20-ots-sms-gateway-qa.conf
+    @include /usr/share/fluentd/etc/all/21-ots-email-gateway-qa.conf
+    @include /usr/share/fluentd/etc/all/22-ots-push-gateway-qa.conf
+    @include /usr/share/fluentd/etc/all/23-ots-passbook-qa.conf
+    @include /usr/share/fluentd/etc/all/24-ots-informer-service-qa.conf
+    @include /usr/share/fluentd/etc/all/25-ots-market-service-dev.conf
+    @include /usr/share/fluentd/etc/all/25-ots-market-service-qa.conf
+    @include /usr/share/fluentd/etc/all/26-ots-mobile-proxy-dev.conf
+    @include /usr/share/fluentd/etc/all/26-ots-mobile-proxy-qa.conf
+    @include /usr/share/fluentd/etc/all/26-ots-ucp-qa.conf
+    @include /usr/share/fluentd/etc/all/27-rdc-dev.conf
+    @include /usr/share/fluentd/etc/all/29-s7tr-marketplace-qa.conf
+    @include /usr/share/fluentd/etc/all/30-s7tr-ifee-dev.conf
+    @include /usr/share/fluentd/etc/all/30-s7tr-ifee-stage.conf
+    @include /usr/share/fluentd/etc/all/33-ots-offer-dev.conf
+    @include /usr/share/fluentd/etc/all/33-ots-offer-qa.conf
+    @include /usr/share/fluentd/etc/all/34-ots-eve-qa.conf
+    @include /usr/share/fluentd/etc/all/35-ots-minprice-service-qa.conf
+    @include /usr/share/fluentd/etc/all/36-ots-subscription-dev.conf
+    @include /usr/share/fluentd/etc/all/36-ots-subscription-qa.conf
+    @include /usr/share/fluentd/etc/all/40-wsp-ndc-dev.conf
+    @include /usr/share/fluentd/etc/all/41-ots-mse-stat-api-qa.conf
+    @include /usr/share/fluentd/etc/all/42-s7tr-mpob-qa.conf
+    @include /usr/share/fluentd/etc/all/43-ots-ibe-dev.conf
+    @include /usr/share/fluentd/etc/all/44-tr-cp-qa.conf
+    @include /usr/share/fluentd/etc/all/45-ots-event-service-qa.conf
+    @include /usr/share/fluentd/etc/all/46-app-traefik-v2.conf
+    @include /usr/share/fluentd/etc/all/47-ots-ibe-qa.conf
+    @include /usr/share/fluentd/etc/all/48-ots-ibe-qa-rc.conf
+    @include /usr/share/fluentd/etc/all/50-ots-cashless-dev.conf
+    @include /usr/share/fluentd/etc/all/99-sys.conf

@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ include "fluentd.fullname" . }}
+  labels:
+    app: fluentd
+     {{- include "fluentd.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "fluentd.selectorLabels" . | nindent 6 }}
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: fluentd
+        {{- include "fluentd.selectorLabels" .  | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "fluentd.serviceAccountName" . }}
+      serviceAccount: {{ include "fluentd.serviceAccountName" . }}
+      imagePullSecrets:
+        - name: {{ .Values.secret_nexus_auth.name }}
+      initContainers:
+        - name: config-fluentd
+          image: busybox
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/bin/sh"]
+          args:
+            - -c
+            - cp /usr/share/fluentd/etc/fluent.conf /usr/share/fluentd/; cp /usr/share/fluentd/etc/config.d/* /usr/share/fluentd/etc/all/;
+          volumeMounts:
+            {{- toYaml .Values.initContainers.volumeMounts | nindent 10 }}
+      containers:
+      - image: "{{ .Values.image.repository }}:{{ .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        workingDir: /usr/share
+        name: fluentd
+        command: ["/bin/sh", "-c", "fluentd -c /usr/share/fluentd/fluent.conf"]
+        env:
+        - name: K8S_NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        ports:
+        - containerPort: 24224
+          name: forward
+          protocol: TCP
+        - containerPort: 24210
+          name: monitor-agent
+        - containerPort: 24231
+          name: prometheus
+        volumeMounts:
+        {{- toYaml .Values.volumeMounts | nindent 10 }}
+      volumes:
+        {{- toYaml .Values.volumes | nindent 6 }}

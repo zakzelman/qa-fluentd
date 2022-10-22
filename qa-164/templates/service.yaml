@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "fluentd.fullname" . }}
+  labels:
+    component: metrics
+    app: fluentd
+    {{- include "fluentd.labels" . | nindent 4 }}
+status:
+    loadBalancer: {}
+spec:
+  ports:
+  - name: forward
+    port: 24224
+    protocol: TCP
+    targetPort: forward
+  - name: prometheus
+    port: 24231
+    protocol: TCP
+    targetPort: prometheus
+  - name: monitor-agent
+    port: 24210
+    protocol: TCP
+    targetPort: monitor-agent
+  selector:
+    {{- include "fluentd.selectorLabels" . | nindent 4 }}
+  clusterIP: None
+  type: ClusterIP
+  sessionAffinity: None

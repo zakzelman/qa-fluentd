@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluentd-conf
+  labels:
+    app: fluentd
+data:
+  fluent.conf: |
+    <system>
+      worker 6
+      log_level info
+    </system>
+    <source>
+      @type  forward
+      @id input_forward
+      port  24224
+      bind 0.0.0.0
+    </source>
+    <source>
+      @type monitor_agent
+      bind 0.0.0.0
+      port 24210
+    </source>
+    <source>
+      @type prometheus
+      bind 0.0.0.0
+      port 24231
+      metrics_path /usr/share/metrics
+    </source>
+    <source>
+      @type prometheus_output_monitor
+      interval 10
+      <labels>
+        hostname ${hostname}
+      </labels>
+    </source>
+    @include /usr/share/fluentd/etc/all/00-sys.conf
+    @include /usr/share/fluentd/etc/all/27-rdc-dev.conf
+    @include /usr/share/fluentd/etc/all/37-wsp-airflow-qa.conf
+    @include /usr/share/fluentd/etc/all/37-wsp-airflow-scheduler-qa.conf
+    @include /usr/share/fluentd/etc/all/37-wsp-airflow-dev.conf
+    @include /usr/share/fluentd/etc/all/38-rks-s7media-qa.conf
+    @include /usr/share/fluentd/etc/all/39-rks-portal-qa-main.conf
+    @include /usr/share/fluentd/etc/all/39-rks-portal-dev-main.conf
+    @include /usr/share/fluentd/etc/all/39-rks-portal-stage-main.conf
+    @include /usr/share/fluentd/etc/all/40-rks-s7media-stage.conf   
+    @include /usr/share/fluentd/etc/all/99-sys.conf
