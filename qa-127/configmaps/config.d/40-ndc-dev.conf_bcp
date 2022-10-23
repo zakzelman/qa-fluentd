@@ -1,4 +1,4 @@
-<filter kube-127.var.log.containers**_wsp-ndc-dev_**>
+<filter kube-127.var.log.containers**_ndc-dev_**>
   @type parser
   key_name log
     format multiline
@@ -6,20 +6,20 @@
     format1 /^(?<time>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3}) [(?<thread>.)] (?<level>[^\s]+)(?<message>.*)/
 </filter>
 
-<filter kube-127.var.log.containers**_wsp-ndc-dev_**>
+<filter kube-127.var.log.containers**_ndc-dev_**>
   @type record_transformer
   <record>
     fluentd_instance "#{Socket.gethostname}"
     beat.hostname fluentd
-    tags wsp-ndc-dev
+    tags ndc-dev
   </record>
 </filter>
 
-<match kube-127.var.log.containers**_wsp-ndc-dev_**>
+<match kube-127.var.log.containers**_ndc-dev_**>
     @type copy
     <store>
      @type kafka2
-     brokers qa-itg-es-kafka-1.web.s7.ru:9092
+     brokers kafka.test:9092
      topic_key RAW_QA-127-WSP-NDC-DEV_3.4.1_M1
      default_topic RAW_QA-127-WSP-NDC-DEV_3.4.1_M1
      required_acks -1
@@ -27,7 +27,7 @@
      <buffer>
         flush_interval 3s
         @type file
-        path /usr/share/fluentd/buffers-map/wsp-ndc-dev
+        path /usr/share/fluentd/buffers-map/ndc-dev
         flush_thread_count 8
 	      chunk_limit_size 64M
         total_limit_size 2048M
