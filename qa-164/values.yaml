@@ -9,11 +9,6 @@ image:
 serviceAccount:
   create: true
 
-secret_nexus_auth:
-  name: "nexus-auth-wsp"
-  auth_cert:
-    .dockerconfigjson: eyJhdXRocyI6eyJwcm9kLW5leHVzLndlYi5zNy5ydTo3MDE4Ijp7ImF1dGgiOiJhemh6WDNCMWJHeGZkM053T2tsSWN6aFJjRE0wYUZSTlVRPT0ifX19Cg==
-
 initContainers:
   volumeMounts:
     - name: config-path
