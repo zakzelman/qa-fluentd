@@ -39,9 +39,9 @@ data:
     @include /usr/share/fluentd/etc/all/37-wsp-airflow-qa.conf
     @include /usr/share/fluentd/etc/all/37-wsp-airflow-scheduler-qa.conf
     @include /usr/share/fluentd/etc/all/37-wsp-airflow-dev.conf
-    @include /usr/share/fluentd/etc/all/38-rks-s7media-qa.conf
+    @include /usr/share/fluentd/etc/all/38-rks-media-qa.conf
     @include /usr/share/fluentd/etc/all/39-rks-portal-qa-main.conf
     @include /usr/share/fluentd/etc/all/39-rks-portal-dev-main.conf
     @include /usr/share/fluentd/etc/all/39-rks-portal-stage-main.conf
-    @include /usr/share/fluentd/etc/all/40-rks-s7media-stage.conf   
+    @include /usr/share/fluentd/etc/all/40-rks-media-stage.conf   
     @include /usr/share/fluentd/etc/all/99-sys.conf
