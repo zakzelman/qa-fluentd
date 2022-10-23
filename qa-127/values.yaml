@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 
 image:
-  repository: prod-nexus.web.s7.ru:7018/fluentd-custom
+  repository: repository:7018/fluentd-custom
   pullPolicy: IfNotPresent
   
 serviceAccount:
@@ -19,11 +19,6 @@ resources:
     requests:
       memory: 1Gi
       cpu: 2
-
-secret_nexus_auth:
-  name: "nexus-auth-wsp"
-  auth_cert:
-    .dockerconfigjson: eyJhdXRocyI6eyJwcm9kLW5leHVzLndlYi5zNy5ydTo3MDE4Ijp7ImF1dGgiOiJhemh6WDNCMWJHeGZkM053T2tsSWN6aFJjRE0wYUZSTlVRPT0ifX19Cg==
 
 initContainers:
   volumeMounts:
