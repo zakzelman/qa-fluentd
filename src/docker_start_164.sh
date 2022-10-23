@@ -12,11 +12,11 @@ git config --global push.default simple
 git config --global user.name "${GITLAB_USER_NAME}"
 git add --all
 git commit -m "Version ${APP_VERSION_164}"
-git push https://e.budin:${CI_JOB_TOKEN}@gitlab.web.s7.ru/websupport-team/fluentd-deploy-qa.git/ HEAD:master
+git push https://e.budin:${CI_JOB_TOKEN}@gitlab.test/WS/fluentd-deploy-qa.git/ HEAD:master
 echo "Значение appVersion в Chart.yaml изменилось."
 cd src
 docker build -t fluentd-custom-164:$APP_VERSION_164 . 
-docker tag fluentd-custom-164:$APP_VERSION_164 prod-nexus.web.s7.ru:7018/fluentd-custom-164:$APP_VERSION_164
-docker push prod-nexus.web.s7.ru:7018/fluentd-custom-164:$APP_VERSION_164
+docker tag fluentd-custom-164:$APP_VERSION_164 repository:7018/fluentd-custom-164:$APP_VERSION_164
+docker push repository:7018/fluentd-custom-164:$APP_VERSION_164
 
 
