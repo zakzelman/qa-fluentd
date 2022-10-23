@@ -1,0 +1,72 @@
+##This is CI/CD for QA Fluentd.
+
+# Stages #
+stages:
+  - deploy
+  - build_docker
+
+
+
+variables:
+  GIT_STRATEGY: clone
+  KUBECONFIG: /opt/home/gitlab-runner/.kube/context
+  HELM_CHART_DIR_127: qa-127/.
+  HELM_CHART_DIR_164: qa-164/.
+ 
+  
+deploy qa-127:
+  tags:
+    - fluentd-deploy-qa
+    - helm
+    - kubectl
+  image: lachlanevenson/k8s-kubectl:latest
+  stage: deploy
+  when: manual
+  script:
+    #QA-127
+    - echo "$KUBE_CONTEXT_127" | base64 -d > ${KUBECONFIG}
+    - KUBECONFIG=${KUBECONFIG} kubectl create -n kube-logging configmap fluentd-all   --from-file qa-127/configmaps/config.d   --dry-run -o yaml |  kubectl replace -f -
+    - KUBECONFIG=${KUBECONFIG} helm list --namespace kube-logging
+    #- KUBECONFIG=${KUBECONFIG} helm install fluentd --replace --namespace kube-logging ${HELM_CHART_DIR_127}
+    - KUBECONFIG=${KUBECONFIG} helm upgrade fluentd --namespace kube-logging ${HELM_CHART_DIR_127}
+    - KUBECONFIG=${KUBECONFIG} kubectl patch daemonsets fluentd -n kube-logging -p "{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"date\":\"`date +'%s'`\"}}}}}"
+
+
+deploy qa-164:
+  tags:
+    - fluentd-deploy-qa
+    - helm
+    - kubectl
+  image: lachlanevenson/k8s-kubectl:latest
+  stage: deploy
+  when: manual
+  script:
+    #QA-164
+    - echo "$KUBE_CONTEXT_164" | base64 -d > ${KUBECONFIG}
+    - KUBECONFIG=${KUBECONFIG} kubectl create -n kube-logging configmap fluentd-all   --from-file qa-164/configmaps/config.d   --dry-run -o yaml |  kubectl apply -f -
+    - KUBECONFIG=${KUBECONFIG} helm list --namespace kube-logging
+    - KUBECONFIG=${KUBECONFIG} helm upgrade fluentd --namespace kube-logging ${HELM_CHART_DIR_164}
+    #- KUBECONFIG=${KUBECONFIG} helm install fluentd --replace --namespace kube-logging ${HELM_CHART_DIR_164}
+    - KUBECONFIG=${KUBECONFIG} kubectl patch daemonsets fluentd -n kube-logging -p "{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"date\":\"`date +'%s'`\"}}}}}"
+    
+
+docker_127:
+  tags:
+    - fluentd-deploy-qa
+    - helm
+    - kubectl
+  stage: build_docker
+  when: manual
+  script:
+    - src/docker_start.sh
+  
+docker_164:
+  tags:
+    - fluentd-deploy-qa
+    - helm
+    - kubectl
+  stage: build_docker
+  when: manual
+  script:
+    - src/docker_start_164.sh
+
